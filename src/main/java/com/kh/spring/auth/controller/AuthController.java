@@ -1,7 +1,7 @@
 package com.kh.spring.auth.controller;
 
+import com.kh.spring.auth.model.dto.LoginDTO;
 import com.kh.spring.auth.service.AuthService;
-import com.kh.spring.member.model.dto.SignupDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class AuthController {
   private final AuthService authService;
 
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody @Valid SignupDTO member){
+  public ResponseEntity<?> login(@RequestBody @Valid LoginDTO member){
 
     Map<String, String> loginResponse = authService.login(member);
     return ResponseEntity.ok(loginResponse);
