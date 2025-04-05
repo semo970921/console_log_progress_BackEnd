@@ -2,6 +2,10 @@ package com.kh.spring.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,8 +27,19 @@ public class SecurityConfigure {
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .csrf(AbstractHttpConfigurer::disable)
+            .cors(Customizer.withDefaults())
+            .authorizeHttpRequests(requests -> {
+              requests.requestMatchers(HttpMethod.POST, "/auth/**","members", "/boards").permitAll();  // 이런 /auth/login 요청은 권한이 없어도(인가 검사 없이) 다 할 수 있어야하기에
+            })
             .build();
 
   }
+
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception{
+    return authConfig.getAuthenticationManager();
+  }
+
+
 
 }

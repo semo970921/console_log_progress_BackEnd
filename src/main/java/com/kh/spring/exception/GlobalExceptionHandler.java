@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.security.sasl.AuthenticationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,13 @@ public class GlobalExceptionHandler {
   public ResponseEntity<Map<String, String>> handleDuplicateMemberId(MemberIdDuplicateException e){
 
     return makeResponseEntity(e, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(CustomAuthenticationException.class)
+  public ResponseEntity<Map<String, String>> handleAuthenticationException(CustomAuthenticationException e){
+    Map<String, String> error = new HashMap();
+    error.put("error-message", e.getMessage());
+    return ResponseEntity.badRequest().body(error);
   }
 
 }
