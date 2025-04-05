@@ -2,13 +2,13 @@ package com.kh.spring.member.model.service;
 
 import com.kh.spring.exception.MemberIdDuplicateException;
 import com.kh.spring.member.model.dao.MemberMapper;
-import com.kh.spring.member.model.dto.MemberDTO;
+
+import com.kh.spring.member.model.dto.SignupDTO;
 import com.kh.spring.member.model.vo.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 @RequiredArgsConstructor
@@ -20,10 +20,10 @@ public class MemberServiceImpl implements MemberService {
 
 
   @Override
-  public void signUp(MemberDTO member) {
+  public void signUp(SignupDTO member) {
 
     // 이메일 조회로 멤버가 있는지 확인 후 MemberDTO로.... 그 후 유효성 검사
-    MemberDTO searchedMember = mapper.getMemberByMemberEmail(member.getMemberEmail());
+    SignupDTO searchedMember = mapper.getMemberByMemberEmail(member.getMemberEmail());
     if(searchedMember != null){
       throw new MemberIdDuplicateException("이미 존재하는 아이디입니다.");
     }

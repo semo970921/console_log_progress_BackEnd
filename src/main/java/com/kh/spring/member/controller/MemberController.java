@@ -1,6 +1,6 @@
 package com.kh.spring.member.controller;
 
-import com.kh.spring.member.model.dto.MemberDTO;
+import com.kh.spring.member.model.dto.SignupDTO;
 import com.kh.spring.member.model.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class MemberController {
   private final MemberService memberService;
 
   @PostMapping
-  public ResponseEntity<?> signUp(@RequestBody @Valid MemberDTO member){
+  public ResponseEntity<?> signUp(@RequestBody @Valid SignupDTO member){
 
     // log.info("여기 나오는지 확인 : {}", member);
     memberService.signUp(member);

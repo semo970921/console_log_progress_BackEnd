@@ -9,7 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class MemberDTO {
+
+public class SignupDTO {
 
   private Long memberNo; // 시퀀스 넘버
 
@@ -18,8 +19,8 @@ public class MemberDTO {
 
   @NotBlank(message="이메일을 입력해주세요.")
   @Pattern(
-      regexp = "^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\\.[A-Za-z]{2,3}$",
-      message = "유효한 이메일 주소를 입력해주세요."
+          regexp = "^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\\.[A-Za-z]{2,3}$",
+          message = "유효한 이메일 주소를 입력해주세요."
   )
   private String memberEmail;
 
