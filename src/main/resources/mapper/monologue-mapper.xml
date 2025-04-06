@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.spring.monologue.model.dao.MonologueMapper">
+    <resultMap id="monologueResultMap" type="com.kh.spring.monologue.model.vo.Monologue">
+        <id property="monologueNo" column="MONOLOGUE_NO"/>
+        <result property="content" column="CONTENT"/>
+        <result property="weather" column="WEATHER"/>
+        <result property="attachmentNo" column="ATTACHMENT_NO"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="userId" column="USER_ID"/>
+    </resultMap>
+
+    <insert id="insertMonologue" parameterType="com.kh.spring.monologue.model.vo.Monologue">
+        INSERT INTO MONOLOGUE (
+        CONTENT,
+        WEATHER,
+        ATTACHMENT_NO,
+        CREATED_AT,
+        UPDATED_AT,
+        USER_ID
+        ) VALUES (
+        #{content},
+        #{weather},
+        #{attachmentNo},
+        #{createdAt},
+        #{updatedAt},
+        #{userId}
+        )
+        <selectKey keyProperty="monologueNo" resultType="long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <select id="selectMonologueById" resultMap="monologueResultMap">
+        SELECT
+        MONOLOGUE_NO,
+        CONTENT,
+        WEATHER,
+        ATTACHMENT_NO,
+        CREATED_AT,
+        UPDATED_AT,
+        USER_ID
+        FROM MONOLOGUE
+        WHERE MONOLOGUE_NO = #{id}
+    </select>
+
+    <select id="selectAllMonologues" resultMap="monologueResultMap">
+        SELECT
+        MONOLOGUE_NO,
+        CONTENT,
+        WEATHER,
+        ATTACHMENT_NO,
+        CREATED_AT,
+        UPDATED_AT,
+        USER_ID
+        FROM MONOLOGUE
+        ORDER BY CREATED_AT DESC
+    </select>
+
+    <select id="selectMonologuesByUserId" resultMap="monologueResultMap">
+        SELECT
+        MONOLOGUE_NO,
+        CONTENT,
+        WEATHER,
+        ATTACHMENT_NO,
+        CREATED_AT,
+        UPDATED_AT,
+        USER_ID
+        FROM MONOLOGUE
+        WHERE USER_ID = #{userId}
+        ORDER BY CREATED_AT DESC
+    </select>
+
+    <update id="updateMonologue" parameterType="com.kh.spring.monologue.model.vo.Monologue">
+        UPDATE MONOLOGUE
+        SET
+        CONTENT = #{content},
+        WEATHER = #{weather},
+        ATTACHMENT_NO = #{attachmentNo},
+        UPDATED_AT = #{updatedAt}
+        WHERE MONOLOGUE_NO = #{monologueNo}
+    </update>
+
+    <delete id="deleteMonologue" parameterType="long">
+        DELETE FROM MONOLOGUE
+        WHERE MONOLOGUE_NO = #{id}
+    </delete>
+</mapper>

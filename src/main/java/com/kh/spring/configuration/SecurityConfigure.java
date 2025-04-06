@@ -45,6 +45,8 @@ public class SecurityConfigure {
             .authorizeHttpRequests(requests -> {
               requests.requestMatchers("/auth/**", "/auth/login", "/auth/refresh").permitAll();
               requests.requestMatchers(HttpMethod.POST, "/members").permitAll();
+              // 혼잣말 API 접근 허용 (테스트 목적으로, 나중에 인증이 필요하도록 변경 가능)
+              requests.requestMatchers("/api/monologues/**").permitAll();
               requests.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll(); // CORS Preflight 요청 허용
               requests.anyRequest().authenticated(); // 그 외 모든 요청은 인증 필요
             })
