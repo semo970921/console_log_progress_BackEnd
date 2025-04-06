@@ -2,7 +2,7 @@ package com.kh.spring.auth.service;
 
 import com.kh.spring.auth.model.dto.LoginDTO;
 import com.kh.spring.auth.model.vo.CustomUserDetails;
-import com.kh.spring.token.model.service.TokenService;
+import com.kh.spring.auth.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,17 +12,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
 
   private final AuthenticationManager authenticationManager;
-  private final TokenService tokenService;
+  private final JwtUtil jwtUtil; // TokenService 대신 JwtUtil 직접 사용
 
   // 로그인
   @Override
@@ -45,8 +44,9 @@ public class AuthServiceImpl implements AuthService{
     log.info("로그인 성공!");
     log.info("인증에 성공한 사용자의 정보 : {}", user);
 
-    // 토큰 생성
-    Map<String, String> tokens = tokenService.generateToken(user.getUsername(), user.getMemberNo());
+    // 토큰 생성 (TokenService 대신 JwtUtil 직접 사용)
+    String accessToken = jwtUtil.getAccessToken(user.getUsername());
+    String refreshToken = jwtUtil.getRefreshToken(user.getUsername());
 
     // 응답 데이터 구성
     Map<String, String> loginResponse = new HashMap<>();
@@ -54,12 +54,9 @@ public class AuthServiceImpl implements AuthService{
     loginResponse.put("memberName", user.getMemberName());
     loginResponse.put("memberEmail", user.getUsername());
 
-    // 보안상 비밀번호는 응답에 포함시키지 않는 것이 좋습니다
-    // loginResponse.put("memberPassword", user.getPassword());
-
     // 토큰 정보 추가
-    loginResponse.put("accessToken", tokens.get("accessToken"));
-    loginResponse.put("refreshToken", tokens.get("refreshToken"));
+    loginResponse.put("accessToken", accessToken);
+    loginResponse.put("refreshToken", refreshToken);
 
     return loginResponse;
   }

@@ -1,40 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.spring.token.model.dao.TokenMapper">
-    <insert id="saveToken">
-        INSERT
-        INTO
-        MY_MEMBER_TOKEN
-        VALUES
-        (
-        #{token}
-        ,#{memberNo}
-        ,#{expiration}
-        )
+
+    <!-- 리프레시 토큰 저장 -->
+    <insert id="saveToken" parameterType="com.kh.spring.token.vo.RefreshToken">
+        MERGE INTO REFRESH_TOKEN
+            USING DUAL ON (MEMBER_NO = #{memberNo})
+            WHEN MATCHED THEN
+                UPDATE SET
+                    TOKEN = #{token},
+                    EXPIRATION = #{expiration}
+            WHEN NOT MATCHED THEN
+                INSERT (TOKEN, MEMBER_NO, EXPIRATION)
+                    VALUES (#{token}, #{memberNo}, #{expiration})
     </insert>
 
-    <delete id="deleteExpiredRefreshToken">
-        DELETE
-        FROM
-        MY_MEMBER_TOKEN
-        WHERE
-        EXPIRATION &lt; #{now}  <!-- <![CDATA[<]]> -->
-    </delete>
-
-    <select id="findByToken">
+    <!-- 리프레시 토큰 조회 -->
+    <select id="findByToken" parameterType="com.kh.spring.token.vo.RefreshToken" resultType="com.kh.spring.token.vo.RefreshToken">
         SELECT
-        TOKEN
-        ,MEMBER_NO memberNo
-        ,EXPIRATION
-        FROM
-        MY_MEMBER_TOKEN
-        WHERE
-        TOKEN = #{token}
-
-
-
+            TOKEN as token,
+            MEMBER_NO as memberNo,
+            EXPIRATION as expiration
+        FROM REFRESH_TOKEN
+        WHERE TOKEN = #{token}
     </select>
+
+    <!-- 만료된 리프레시 토큰 삭제 -->
+    <delete id="deleteExpiredRefreshToken" parameterType="long">
+        DELETE FROM REFRESH_TOKEN
+        WHERE EXPIRATION &lt; #{now}
+    </delete>
 
 </mapper>
